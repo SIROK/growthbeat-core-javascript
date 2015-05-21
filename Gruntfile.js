@@ -1,37 +1,53 @@
-module.exports = function (grunt) {
-
-    require('load-grunt-tasks')(grunt, {
-        config: 'package.json',
-        scope: 'devDependencies'
-    });
+module.exports = function(grunt){
 
     grunt.initConfig({
-        typescript: {
-            main: {
-                src: ['src/main.ts'],
-                dest: 'target/main.js',
+        pkg: grunt.file.readJSON('package.json'),
+        connect: {
+            site: {
                 options: {
-                    module: 'amd',
-                    comments: true
-                }
-            }
+                    hostname: 'localhost',
+                    port: 9000,
+                },
+            },
+        },
+        typescript: {
+            base: {
+                src: ['./source/ts/*.ts'],
+                dest: './growthbeat.js',
+                options: {
+                    sourceMap: false,
+                    declaration: false,
+                },
+            },
+        },
+        nanoajax2GM: {
+            src: './bower_components/nanoajax/index.js',
+            dest: './growthbeat.js',
         },
         uglify: {
-            main: {
+            dist: {
                 files: {
-                    'growthbeat.js': ['target/main.js']
+                    './growthbeat.min.js': ['./growthbeat.js']
                 }
             }
         },
         watch: {
-            typescript: {
-                files: ['**/*.ts'],
-                tasks: ['typescript', 'uglify']
-            }
-        }
+            all: {
+                files: [
+                    './source/ts/*.ts',
+                ],
+                tasks: ['typescript', 'nanoajax2GM', 'uglify'],
+                options: {
+                    livereload: true,
+                    spawn: false,
+                },
+            },
+        },
     });
 
-    grunt.registerTask('default', ['typescript', 'uglify']);
-    grunt.registerTask('watchr',['watch']);
+    require('load-grunt-tasks')(grunt);
+    grunt.loadTasks('./source/tasks');
 
+    grunt.registerTask('dev', ['connect', 'watch']);
+    grunt.registerTask('default', ['typescript', 'nanoajax2GM', 'uglify']);
 };
