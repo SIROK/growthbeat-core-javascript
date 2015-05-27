@@ -3,7 +3,7 @@ module Growthbeat {
     httpUtils = new Growthbeat.HttpUtils();
     cookieUtils = new Growthbeat.CookieUtils();
     constructor() {
-      var uuid = this.cookieUtils.getValueByName('growthbeat.uuid');
+      var uuid = this.cookieUtils.get('growthbeat.uuid');
       if(uuid == '' || uuid == null) {
         this.httpUtils.get('/1/users/uuid', (res:string)=> {
           if(res == null) return;

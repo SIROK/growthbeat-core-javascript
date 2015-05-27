@@ -4,18 +4,25 @@ module Growthbeat {
 
   export class CookieUtils {
 
-    getValueByName(name:string) {
-
-      var allCookie = document.cookie;
-      if (allCookie == '') return '';
-      var cookies = allCookie.split(';');
-      for (var cookie in cookies) {
-        if (cookies[cookie].match(name)) {
-          var tests = cookies[cookie].split('=');
-          return tests[1];
-        }
-        return;
+    get(name:string) {
+      var cookies:Array<string> = document.cookie.split(';');
+      for (var i in cookies) {
+        var nameValuePair:Array<string> = cookies[i].split('=');
+        if (nameValuePair[0] != name)
+          continue;
+        return decodeURIComponent(nameValuePair[1]);
       }
+    }
+
+    set(name:string, value:string, expiry:number):void {
+      var cookie:string = name + '=' + encodeURIComponent(value);
+      cookie += '; path=/'
+      cookie += '; expires=' + new Date(new Date().getTime() + expiry).toUTCString();
+      document.cookie = cookie;
+    }
+
+    delete(name:string):void {
+      document.cookie = name + '=; path=/; expires=' + new Date(0).toUTCString();
     }
 
   }
