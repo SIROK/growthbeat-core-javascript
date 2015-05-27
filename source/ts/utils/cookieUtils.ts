@@ -5,10 +5,12 @@ module Growthbeat {
   export class CookieUtils {
 
     get(name:string) {
+      if (!document.cookie)
+        return null;
       var cookies:Array<string> = document.cookie.split(';');
       for (var i in cookies) {
         var nameValuePair:Array<string> = cookies[i].split('=');
-        if (nameValuePair[0] != name)
+        if (nameValuePair[0] !== name)
           continue;
         return decodeURIComponent(nameValuePair[1]);
       }

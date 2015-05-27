@@ -12,7 +12,7 @@ module.exports = function(grunt){
         },
         typescript: {
             base: {
-                src: ['./source/ts/*.ts'],
+                src: ['./source/ts/**/*.ts'],
                 dest: './growthbeat.js',
                 options: {
                     sourceMap: false,
@@ -34,7 +34,7 @@ module.exports = function(grunt){
         watch: {
             all: {
                 files: [
-                    './source/ts/*.ts',
+                    './source/ts/**/*.ts',
                 ],
                 tasks: ['typescript', 'nanoajax2GM', 'uglify'],
                 options: {
