@@ -2,16 +2,14 @@
 
 module Growthbeat {
   export class HttpUtils {
+    urlUtils = new Growthbeat.UrlUtils();
 
-    post(url:string, params?:{}, isCredential?:boolean,
+    get(url:string, isCredential?:boolean,
       success?:(res:any)=>void, error?:(errorModel:Growthbeat.ErrorModel)=>void) {
-      var param = JSON.parse(JSON.stringify(params));
       Growthbeat.nanoajax.ajax({
-        url: 'http://api.growthbeat.local:8085' + url
-         + '?applicationId=' + param.applicationId
-         + '&credentialId=' + param.credentialId,
+        url: 'http://api.growthbeat.local:8085' + url,
         withCredentials: isCredential || false,
-        method: 'POST'
+        method: 'GET'
       }, (code:number, response:any)=>{
         if( code !== 200 ){
           if (code === 0) {
@@ -23,12 +21,14 @@ module Growthbeat {
       });
     }
 
-    get(url:string, isCredential?:boolean,
+    post(url:string, params?:{}, isCredential?:boolean,
       success?:(res:any)=>void, error?:(errorModel:Growthbeat.ErrorModel)=>void) {
       Growthbeat.nanoajax.ajax({
-        url: 'http://api.growthbeat.local:8085' + url,
+        url: 'http://api.growthbeat.local:8085' + url + '?' + this.urlUtils.serializeObject(params),
+        data: JSON.stringify(params),
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         withCredentials: isCredential || false,
-        method: 'GET'
+        method: 'POST'
       }, (code:number, response:any)=>{
         if( code !== 200 ){
           if (code === 0) {
