@@ -10,7 +10,7 @@ module Growthbeat {
       var cookies:Array<string> = document.cookie.split(';');
       for (var i in cookies) {
         var nameValuePair:Array<string> = cookies[i].split('=');
-        if (nameValuePair[0] !== name)
+        if (nameValuePair[0].trim() !== name)
           continue;
         return decodeURIComponent(nameValuePair[1]);
       }
