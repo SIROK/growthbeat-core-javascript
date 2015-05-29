@@ -3,17 +3,15 @@ module Growthbeat {
   export class Uuid implements Growthbeat.Options {
     cookieDuration = 7 * 24 * 60 * 60 * 1000;
     httpUtils = new Growthbeat.HttpUtils();
+    jsonpUtils = new Growthbeat.JsonpUtils();
     cookieUtils = new Growthbeat.CookieUtils();
 
-    constructor() {
+    constructor(callback:string) {
       var uuid = this.cookieUtils.get('growthbeat.uuid');
       if(uuid == '' || uuid == null) {
-        this.httpUtils.get('/1/users/uuid', true, (res:string)=> {
-          if(res == null) return;
-          this.cookieUtils.set('growthbeat.uuid', res, this.cookieDuration);
-        }, (errorModel:Growthbeat.ErrorModel)=>{
-          console.log(errorModel.getMessage);
-        });
+        // jsonp
+        this.jsonpUtils.startLoader('/1/users/uuid?callback=' + callback);
+
       }
     }
 
