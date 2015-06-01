@@ -7,8 +7,8 @@ module Growthbeat {
 
     constructor(callback:string) {
       var uuid = this.cookieUtils.get('growthbeat.uuid');
-      if(uuid == '' || uuid == null) {
-        this.jsonpUtils.startLoader('/1/users/uuid?callback=' + callback, callback, (res:any)=> {
+      if(uuid === 'undefined' || uuid == null) {
+        this.jsonpUtils.startLoader('/1/users/uuid?jsonpCallback=' + callback, callback, (res:any)=> {
           this.cookieUtils.set('growthbeat.uuid', res.uuid, this.cookieDuration);
         });
 

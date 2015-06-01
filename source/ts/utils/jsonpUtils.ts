@@ -5,11 +5,10 @@ module Growthbeat {
       var script = document.createElement('script');
       script.src = 'http://api.growthbeat.local:8085' + req;
       window[callback] = (param:any)=> {
-        success(param);
+        if (param != null) success(param);
       }
       document.head.appendChild(script);
     }
-
 
   }
 }

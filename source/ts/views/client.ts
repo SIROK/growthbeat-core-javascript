@@ -7,9 +7,9 @@ module Growthbeat {
 
     constructor(options:{applicationId:string, credentialId:string}, callback:string) {
       var clientId = this.cookieUtils.get('growthbeat.clientId');
-      if(clientId == '' || clientId == null) {
+      if(clientId === 'undefined' || clientId == null) {
         var params = this.urlUtils.serializeObject(options);
-        this.jsonpUtils.startLoader('/1/clients/cors?' + params +' &callback=' + callback, callback, (res:any)=> {
+        this.jsonpUtils.startLoader('/1/clients/cors?' + params +'&jsonpCallback=' + callback, callback, (res:any)=> {
           this.cookieUtils.set('growthbeat.clientId', res.id, this.cookieDuration);
         });
       }
