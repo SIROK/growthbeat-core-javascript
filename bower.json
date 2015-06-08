@@ -1,0 +1,18 @@
+{
+  "name": "growthbeat-javascript",
+  "version": "0.1.0",
+  "authors": "SIROK, Inc.",
+  "license": "Apache-2.0",
+  "private": false,
+  "keywords": "growthbeat",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "npm-debug.log",
+    "tsconfig.json"
+  ],
+  "dependencies": {
+    "nanoajax": "git@github.com:yanatan16/nanoajax.git"
+  }
+}
