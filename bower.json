@@ -1,9 +1,10 @@
 {
   "name": "growthbeat-javascript",
-  "version": "0.0.0",
-  "authors": "SIROK, Ink.",
-  "license": "MIT",
-  "private": true,
+  "version": "0.1.0",
+  "authors": "SIROK, Inc.",
+  "license": "Apache-2.0",
+  "private": false,
+  "keywords": "growthbeat",
   "ignore": [
     "**/.*",
     "node_modules",
