@@ -1,7 +1,7 @@
 {
   "name": "growthbeat-core-javascript",
   "version": "0.1.0",
-  "description": "Growthbeat SDK for JavaScript",
+  "description": "Growthbeat core SDK for JavaScript",
   "repository": {
     "type": "git",
     "url": "https://github.com/SIROK/growthbeat-core-javascript"
