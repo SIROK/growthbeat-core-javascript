@@ -24,7 +24,7 @@ module Growthbeat {
         }
 
         public static create(applicationId:string, credentialId:string, success:(client:Client) => void, failure:(error:Error) => void) {
-            GrowthbeatCore.getInstance().getHttpClient().jsonPRequest('createClient', '/1/client/create', {
+            GrowthbeatCore.getInstance().getHttpClient().jsonPRequest('createClient', '1/clients/create', {
                 applicationId: applicationId,
                 credentialId: credentialId
             }, (responseText:string) => {

@@ -1,7 +1,6 @@
 module Growthbeat {
-    export class HttpClient {
 
-        private static JSONP_CALLBACK_PREFIX = 'Growthbeat.HttpClient.JsonPResponse.';
+    export class HttpClient {
 
         private static APPLICATION_JSON:string = 'application/json';
         private static APPLICATION_FORM_URLENCODED:string = 'application/x-www-form-urlencoded';
@@ -12,7 +11,7 @@ module Growthbeat {
             this.baseUrl = baseUrl;
         }
 
-        public get(requestType:HttpRequestType, path:string, params:{}, success:(responseText:string) => void, failure:(error:Error) => void) {
+        public get(requestType:HttpRequestType, path:string, params:any, success:(responseText:string) => void, failure:(error:Error) => void) {
 
             switch (requestType) {
                 case HttpRequestType.normal:
@@ -28,7 +27,7 @@ module Growthbeat {
 
         }
 
-        public post(requestType:HttpRequestType, path:string, params:{}, success:(responseText:string) => void, failure:(error:Error) => void) {
+        public post(requestType:HttpRequestType, path:string, params:any, success:(responseText:string) => void, failure:(error:Error) => void) {
 
             switch (requestType) {
                 case HttpRequestType.normal:
@@ -44,7 +43,7 @@ module Growthbeat {
 
         }
 
-        public put(requestType:HttpRequestType, path:string, params:{}, success:(responseText:string) => void, failure:(error:Error) => void) {
+        public put(requestType:HttpRequestType, path:string, params:any, success:(responseText:string) => void, failure:(error:Error) => void) {
 
             switch (requestType) {
                 case HttpRequestType.normal:
@@ -60,7 +59,7 @@ module Growthbeat {
 
         }
 
-        public delete(requestType:HttpRequestType, path:string, params:{}, success:(responseText:string) => void, failure:(error:Error) => void) {
+        public delete(requestType:HttpRequestType, path:string, params:any, success:(responseText:string) => void, failure:(error:Error) => void) {
 
             switch (requestType) {
                 case HttpRequestType.normal:
@@ -79,20 +78,20 @@ module Growthbeat {
         public jsonPRequest(callback:string, path:string, params:any, success:(responseText:string) => void, failure:(error:Error) => void):void {
 
             var script = document.createElement('script');
-            params.callback = HttpClient.JSONP_CALLBACK_PREFIX + callback;
+            params.callback = callback;
 
             script.src = this.baseUrl + path + HttpUtils.serializeObjectForURI(params);
             document.head.appendChild(script);
 
-            window[HttpClient.JSONP_CALLBACK_PREFIX + callback] = (responseText:string) => {
+            window[callback] = (responseText:string) => {
                 success(responseText);
             };
 
         }
 
-        private requestOwnDomain(path:string, method:string, params:{}, success:(responseText:string) => void, failure:(error:Error) => void):void {
+        private requestOwnDomain(path:string, method:string, params:any, success:(responseText:string) => void, failure:(error:Error) => void):void {
 
-            var headers:{} = {
+            var headers = {
                 Accept: HttpClient.APPLICATION_JSON,
                 'Content-Type': HttpClient.APPLICATION_FORM_URLENCODED,
             };
@@ -101,16 +100,16 @@ module Growthbeat {
 
         }
 
-        private requestByCors(path:string, method:string, params:{}, success:(responseText:string) => void, failure:(error:Error) => void):void {
+        private requestByCors(path:string, method:string, params:any, success:(responseText:string) => void, failure:(error:Error) => void):void {
 
-            var headers:{} = {
+            var headers = {
             };
 
             this.request(path, method, headers, params, true, success, failure);
 
         }
 
-        private request(path:string, method:string, headers:{}, params:{}, withCredentials:boolean, success:(responseText:string) => void, failure:(error:Error) => void):void {
+        private request(path:string, method:string, headers:any, params:any, withCredentials:boolean, success:(responseText:string) => void, failure:(error:Error) => void):void {
 
             var body:string = '';
             if (method == 'GET')

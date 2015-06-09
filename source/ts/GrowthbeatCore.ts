@@ -1,12 +1,11 @@
+/// <reference path="./libs/HttpClient.ts" />
+
 module Growthbeat {
     export class GrowthbeatCore {
 
+        // TODO Default Domain change gbt.io
         private static DEFAULT_BASE_URL:string = "https://api.growthbeat.com/";
         private httpClient:HttpClient = new HttpClient(GrowthbeatCore.DEFAULT_BASE_URL);
-
-        // TODO this HttpClient only use UUID cookie
-        //private static GBT_IO_BASE_URL:string = "https://gbt.io/growthbeat/";
-        //private gbtIOHttpClient:HttpClient = new HttpClient(GrowthbeatCore.GBT_IO_BASE_URL);
 
         private applicationId:string = null;
         private credentialId:string = null;
@@ -25,7 +24,7 @@ module Growthbeat {
 
         public initialize(applicationId:string, credentialId:string):void {
 
-            if (!this.initialized)
+            if (this.initialized)
                 return;
 
             this.initialized = true;

@@ -44,50 +44,6 @@ function setDefault(obj, key, value) {
 Growthbeat.nanoajax=exports;}(window, Growthbeat || (Growthbeat = {})));
 var Growthbeat;
 (function (Growthbeat) {
-    var GrowthbeatCore = (function () {
-        function GrowthbeatCore() {
-            this.httpClient = new Growthbeat.HttpClient(GrowthbeatCore.DEFAULT_BASE_URL);
-            // TODO this HttpClient only use UUID cookie
-            //private static GBT_IO_BASE_URL:string = "https://gbt.io/growthbeat/";
-            //private gbtIOHttpClient:HttpClient = new HttpClient(GrowthbeatCore.GBT_IO_BASE_URL);
-            this.applicationId = null;
-            this.credentialId = null;
-            this.initialized = false;
-            this.client = null;
-        }
-        GrowthbeatCore.getInstance = function () {
-            return this.instance;
-        };
-        GrowthbeatCore.prototype.initialize = function (applicationId, credentialId) {
-            var _this = this;
-            if (!this.initialized)
-                return;
-            this.initialized = true;
-            this.applicationId = applicationId;
-            this.credentialId = credentialId;
-            // TODO intentHandler
-            // TODO How handle UUID cookie. It have to access gbt.io domain
-            // TODO client.load
-            // TODO if not exist Client remove preference data
-            Growthbeat.Client.create(this.applicationId, this.credentialId, function (client) {
-                Growthbeat.Client.save(client);
-                _this.client = client;
-            }, function (error) {
-                // TODO Logger.error
-            });
-        };
-        // TODO How perpetuate preference data.
-        GrowthbeatCore.prototype.getHttpClient = function () {
-            return this.httpClient;
-        };
-        GrowthbeatCore.DEFAULT_BASE_URL = "http://api.growthbeat.local:8081/";
-        GrowthbeatCore.instance = new GrowthbeatCore();
-        return GrowthbeatCore;
-    })();
-    Growthbeat.GrowthbeatCore = GrowthbeatCore;
-})(Growthbeat || (Growthbeat = {}));
-var Growthbeat;
-(function (Growthbeat) {
     var HttpClient = (function () {
         function HttpClient(baseUrl) {
             this.baseUrl = baseUrl;
@@ -146,10 +102,10 @@ var Growthbeat;
         };
         HttpClient.prototype.jsonPRequest = function (callback, path, params, success, failure) {
             var script = document.createElement('script');
-            params.callback = HttpClient.JSONP_CALLBACK_PREFIX + callback;
+            params.callback = callback;
             script.src = this.baseUrl + path + Growthbeat.HttpUtils.serializeObjectForURI(params);
             document.head.appendChild(script);
-            window[HttpClient.JSONP_CALLBACK_PREFIX + callback] = function (responseText) {
+            window[callback] = function (responseText) {
                 success(responseText);
             };
         };
@@ -182,12 +138,54 @@ var Growthbeat;
                 success(responseText);
             });
         };
-        HttpClient.JSONP_CALLBACK_PREFIX = 'Growthbeat.HttpClient.JsonPResponse.';
         HttpClient.APPLICATION_JSON = 'application/json';
         HttpClient.APPLICATION_FORM_URLENCODED = 'application/x-www-form-urlencoded';
         return HttpClient;
     })();
     Growthbeat.HttpClient = HttpClient;
+})(Growthbeat || (Growthbeat = {}));
+/// <reference path="./libs/HttpClient.ts" />
+var Growthbeat;
+(function (Growthbeat) {
+    var GrowthbeatCore = (function () {
+        function GrowthbeatCore() {
+            this.httpClient = new Growthbeat.HttpClient(GrowthbeatCore.DEFAULT_BASE_URL);
+            this.applicationId = null;
+            this.credentialId = null;
+            this.initialized = false;
+            this.client = null;
+        }
+        GrowthbeatCore.getInstance = function () {
+            return this.instance;
+        };
+        GrowthbeatCore.prototype.initialize = function (applicationId, credentialId) {
+            var _this = this;
+            if (this.initialized)
+                return;
+            this.initialized = true;
+            this.applicationId = applicationId;
+            this.credentialId = credentialId;
+            // TODO intentHandler
+            // TODO How handle UUID cookie. It have to access gbt.io domain
+            // TODO client.load
+            // TODO if not exist Client remove preference data
+            Growthbeat.Client.create(this.applicationId, this.credentialId, function (client) {
+                Growthbeat.Client.save(client);
+                _this.client = client;
+            }, function (error) {
+                // TODO Logger.error
+            });
+        };
+        // TODO How perpetuate preference data.
+        GrowthbeatCore.prototype.getHttpClient = function () {
+            return this.httpClient;
+        };
+        // TODO Default Domain change gbt.io
+        GrowthbeatCore.DEFAULT_BASE_URL = "https://api.growthbeat.com/";
+        GrowthbeatCore.instance = new GrowthbeatCore();
+        return GrowthbeatCore;
+    })();
+    Growthbeat.GrowthbeatCore = GrowthbeatCore;
 })(Growthbeat || (Growthbeat = {}));
 var Growthbeat;
 (function (Growthbeat) {
@@ -206,7 +204,7 @@ var Growthbeat;
             // TODO perpetuate client data.
         };
         Client.create = function (applicationId, credentialId, success, failure) {
-            Growthbeat.GrowthbeatCore.getInstance().getHttpClient().jsonPRequest('createClient', '/1/client/create', {
+            Growthbeat.GrowthbeatCore.getInstance().getHttpClient().jsonPRequest('createClient', '1/clients/create', {
                 applicationId: applicationId,
                 credentialId: credentialId
             }, function (responseText) {
