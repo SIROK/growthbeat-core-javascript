@@ -1,19 +1,39 @@
 module Growthbeat {
-  export class Client implements Growthbeat.Options {
-    cookieDuration = 7 * 24 * 60 * 60 * 1000;
-    jsonpUtils = new Growthbeat.JsonpUtils();
-    cookieUtils = new Growthbeat.CookieUtils();
-    urlUtils = new Growthbeat.UrlUtils();
+    export class Client {
 
-    constructor(options:{applicationId:string, credentialId:string}, callback:string) {
-      var clientId = this.cookieUtils.get('growthbeat.clientId');
-      if(clientId === 'undefined' || clientId == null) {
-        var params = this.urlUtils.serializeObject(options);
-        this.jsonpUtils.startLoader('/1/clients/cors?' + params +'&jsonpCallback=' + callback, callback, (res:any)=> {
-          this.cookieUtils.set('growthbeat.clientId', res.id, this.cookieDuration);
-        });
-      }
+        private id:string;
+        private created:Date;
+        //private application:Application;
+
+        constructor(data?:any) {
+
+            if (data == undefined)
+                return;
+
+            this.id = data.id;
+            this.created = data.created;
+
+        }
+
+        public static save(client:Client) {
+            // TODO perpetuate client data.
+        }
+
+        public static load() {
+            // TODO perpetuate client data.
+        }
+
+        public static create(applicationId:string, credentialId:string, success:(client:Client) => void, error:(errorModel:ErrorModel) => void) {
+            GrowthbeatCore.getInstance().getHttpClient().jsonPRequest('createClient', '/1/client/create', {
+                applicationId: applicationId,
+                credentialId: credentialId
+            }, (responseText:string) => {
+                success(new Client(responseText));
+            }, (errorModel:ErrorModel) => {
+                error(errorModel);
+            })
+        }
+
     }
 
-  }
 }
