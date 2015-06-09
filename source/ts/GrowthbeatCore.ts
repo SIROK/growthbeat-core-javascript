@@ -44,7 +44,7 @@ module Growthbeat {
             Client.create(this.applicationId, this.credentialId, (client:Client) => {
                 Client.save(client);
                 this.client = client;
-            }, (errorModel:ErrorModel) => {
+            }, (error:Error) => {
                 // TODO Logger.error
             })
 

@@ -1,5 +1,5 @@
 module Growthbeat {
-    export class ErrorModel {
+    export class Error {
 
         private message:string;
         private code:number;

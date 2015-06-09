@@ -23,14 +23,14 @@ module Growthbeat {
             // TODO perpetuate client data.
         }
 
-        public static create(applicationId:string, credentialId:string, success:(client:Client) => void, error:(errorModel:ErrorModel) => void) {
+        public static create(applicationId:string, credentialId:string, success:(client:Client) => void, failure:(error:Error) => void) {
             GrowthbeatCore.getInstance().getHttpClient().jsonPRequest('createClient', '/1/client/create', {
                 applicationId: applicationId,
                 credentialId: credentialId
             }, (responseText:string) => {
                 success(new Client(responseText));
-            }, (errorModel:ErrorModel) => {
-                error(errorModel);
+            }, (error:Error) => {
+                failure(error);
             })
         }
 

@@ -12,14 +12,14 @@ module Growthbeat {
             this.baseUrl = baseUrl;
         }
 
-        public get(requestType:HttpRequestType, path:string, params:{}, success:(responseText:string) => void, error:(errorModel:ErrorModel) => void) {
+        public get(requestType:HttpRequestType, path:string, params:{}, success:(responseText:string) => void, failure:(error:Error) => void) {
 
             switch (requestType) {
                 case HttpRequestType.normal:
-                    this.requestOwnDomain(path, 'GET', params, success, error);
+                    this.requestOwnDomain(path, 'GET', params, success, failure);
                     break;
                 case HttpRequestType.cors:
-                    this.requestByCors(path, 'GET', params, success, error);
+                    this.requestByCors(path, 'GET', params, success, failure);
                     break;
                 default:
                     // TODO error
@@ -28,14 +28,14 @@ module Growthbeat {
 
         }
 
-        public post(requestType:HttpRequestType, path:string, params:{}, success:(responseText:string) => void, error:(errorModel:ErrorModel) => void) {
+        public post(requestType:HttpRequestType, path:string, params:{}, success:(responseText:string) => void, failure:(error:Error) => void) {
 
             switch (requestType) {
                 case HttpRequestType.normal:
-                    this.requestOwnDomain(path, 'POST', params, success, error);
+                    this.requestOwnDomain(path, 'POST', params, success, failure);
                     break;
                 case HttpRequestType.cors:
-                    this.requestByCors(path, 'POST', params, success, error);
+                    this.requestByCors(path, 'POST', params, success, failure);
                     break;
                 default:
                     // TODO error
@@ -44,14 +44,14 @@ module Growthbeat {
 
         }
 
-        public put(requestType:HttpRequestType, path:string, params:{}, success:(responseText:string) => void, error:(errorModel:ErrorModel) => void) {
+        public put(requestType:HttpRequestType, path:string, params:{}, success:(responseText:string) => void, failure:(error:Error) => void) {
 
             switch (requestType) {
                 case HttpRequestType.normal:
-                    this.requestOwnDomain(path, 'PUT', params, success, error);
+                    this.requestOwnDomain(path, 'PUT', params, success, failure);
                     break;
                 case HttpRequestType.cors:
-                    this.requestByCors(path, 'PUT', params, success, error);
+                    this.requestByCors(path, 'PUT', params, success, failure);
                     break;
                 default:
                     // TODO error
@@ -60,14 +60,14 @@ module Growthbeat {
 
         }
 
-        public delete(requestType:HttpRequestType, path:string, params:{}, success:(responseText:string) => void, error:(errorModel:ErrorModel) => void) {
+        public delete(requestType:HttpRequestType, path:string, params:{}, success:(responseText:string) => void, failure:(error:Error) => void) {
 
             switch (requestType) {
                 case HttpRequestType.normal:
-                    this.requestOwnDomain(path, 'DELETE', params, success, error);
+                    this.requestOwnDomain(path, 'DELETE', params, success, failure);
                     break;
                 case HttpRequestType.cors:
-                    this.requestByCors(path, 'DELETE', params, success, error);
+                    this.requestByCors(path, 'DELETE', params, success, failure);
                     break;
                 default:
                     // TODO error
@@ -76,7 +76,7 @@ module Growthbeat {
 
         }
 
-        public jsonPRequest(callback:string, path:string, params:any, success:(responseText:string) => void, error:(errorModel:ErrorModel) => void):void {
+        public jsonPRequest(callback:string, path:string, params:any, success:(responseText:string) => void, failure:(error:Error) => void):void {
 
             var script = document.createElement('script');
             params.callback = HttpClient.JSONP_CALLBACK_PREFIX + callback;
@@ -90,27 +90,27 @@ module Growthbeat {
 
         }
 
-        private requestOwnDomain(path:string, method:string, params:{}, success:(responseText:string) => void, error:(errorModel:ErrorModel) => void):void {
+        private requestOwnDomain(path:string, method:string, params:{}, success:(responseText:string) => void, failure:(error:Error) => void):void {
 
             var headers:{} = {
                 Accept: HttpClient.APPLICATION_JSON,
                 'Content-Type': HttpClient.APPLICATION_FORM_URLENCODED,
             };
 
-            this.request(path, method, headers, params, false, success, error);
+            this.request(path, method, headers, params, false, success, failure);
 
         }
 
-        private requestByCors(path:string, method:string, params:{}, success:(responseText:string) => void, error:(errorModel:ErrorModel) => void):void {
+        private requestByCors(path:string, method:string, params:{}, success:(responseText:string) => void, failure:(error:Error) => void):void {
 
             var headers:{} = {
             };
 
-            this.request(path, method, headers, params, true, success, error);
+            this.request(path, method, headers, params, true, success, failure);
 
         }
 
-        private request(path:string, method:string, headers:{}, params:{}, withCredentials:boolean, success:(responseText:string) => void, error:(errorModel:ErrorModel) => void):void {
+        private request(path:string, method:string, headers:{}, params:{}, withCredentials:boolean, success:(responseText:string) => void, failure:(error:Error) => void):void {
 
             var body:string = '';
             if (method == 'GET')
@@ -126,7 +126,7 @@ module Growthbeat {
                 withCredentials: true,
             }, (code:number, responseText:string) => {
                 if (code != 200)
-                    error(new Growthbeat.ErrorModel(responseText));
+                    failure(new Error(responseText));
                 success(responseText);
             });
 
