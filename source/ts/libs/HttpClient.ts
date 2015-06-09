@@ -20,9 +20,10 @@ module Growthbeat {
                     this.requestByCors(path, 'GET', params, success, error);
                     break;
                 case HttpRequestType.jsonp:
-                    this.requestByJsonP(path, 'GET', params, success, error);
+                    this.requestByJsonP(path, params, success, error);
                     break;
                 default:
+                    // TODO error
                     break;
             }
 
@@ -38,9 +39,10 @@ module Growthbeat {
                     this.requestByCors(path, 'POST', params, success, error);
                     break;
                 case HttpRequestType.jsonp:
-                    this.requestByJsonP(path, 'POST', params, success, error);
+                    // TODO error
                     break;
                 default:
+                    // TODO error
                     break;
             }
 
@@ -56,9 +58,10 @@ module Growthbeat {
                     this.requestByCors(path, 'PUT', params, success, error);
                     break;
                 case HttpRequestType.jsonp:
-                    this.requestByJsonP(path, 'PUT', params, success, error);
+                    // TODO error
                     break;
                 default:
+                    // TODO error
                     break;
             }
 
@@ -74,9 +77,10 @@ module Growthbeat {
                     this.requestByCors(path, 'DELETE', params, success, error);
                     break;
                 case HttpRequestType.jsonp:
-                    this.requestByJsonP(path, 'DELETE', params, success, error);
+                    // TODO error
                     break;
                 default:
+                    // TODO error
                     break;
             }
 
@@ -102,8 +106,18 @@ module Growthbeat {
 
         }
 
-        private requestByJsonP(path:string, method:string, params:{}, success:(responseText:string) => void, error:(errorModel:ErrorModel) => void):void {
-            // TODO implements
+        private requestByJsonP(path:string, params:{}, success:(responseText:string) => void, error:(errorModel:ErrorModel) => void):void {
+
+            var script = document.createElement('script');
+
+            // FIXME callback fixation
+            script.src = this.baseUrl + path + '?' + UrlUtils.serializeObject(params);
+            document.head.appendChild(script);
+
+            window['Growthbeat.HttpClient.JsonPResponse'] = (responseText:string) => {
+                success(responseText);
+            };
+
         }
 
         private request(path:string, method:string, headers:{}, params:{}, withCredentials:boolean, success:(responseText:string) => void, error:(errorModel:ErrorModel) => void):void {
