@@ -1,7 +1,12 @@
 module Growthbeat {
     export class GrowthbeatCore {
 
-        public static DEFAULT_BASE_URL:string = "https://api.growthbeat.com/";
+        private static DEFAULT_BASE_URL:string = "https://api.growthbeat.com/";
+        private httpClient:HttpClient = new HttpClient(GrowthbeatCore.DEFAULT_BASE_URL);
+
+        // TODO this HttpClient only use UUID cookie
+        //private static GBT_IO_BASE_URL:string = "https://gbt.io/growthbeat/";
+        //private gbtIOHttpClient:HttpClient = new HttpClient(GrowthbeatCore.GBT_IO_BASE_URL);
 
         private applicationId:string = null;
         private credentialId:string = null;
@@ -15,7 +20,7 @@ module Growthbeat {
             return this.instance;
         }
 
-        constructor() {
+        private constructor() {
         }
 
         public initialize(applicationId:string, credentialId:string):void {
@@ -30,8 +35,25 @@ module Growthbeat {
 
             // TODO intentHandler
 
+            // TODO How handle UUID cookie. It have to access gbt.io domain
+
             // TODO client.load
 
+            // TODO if not exist Client remove preference data
+
+            Client.create(this.applicationId, this.credentialId, (client:Client) => {
+                Client.save(client);
+                this.client = client;
+            }, (errorModel:ErrorModel) => {
+                // TODO Logger.error
+            })
+
+        }
+
+        // TODO How perpetuate preference data.
+
+        public getHttpClient():HttpClient {
+            return this.httpClient;
         }
 
     }
