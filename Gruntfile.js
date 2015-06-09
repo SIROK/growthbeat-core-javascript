@@ -13,7 +13,7 @@ module.exports = function(grunt){
         typescript: {
             base: {
                 src: ['./source/ts/**/*.ts'],
-                dest: './growthbeat.js',
+                dest: './growthbeat-core.js',
                 options: {
                     sourceMap: false,
                     declaration: false,
@@ -22,12 +22,12 @@ module.exports = function(grunt){
         },
         nanoajax2GM: {
             src: './bower_components/nanoajax/index.js',
-            dest: './growthbeat.js',
+            dest: './growthbeat-core.js',
         },
         uglify: {
             dist: {
                 files: {
-                    './growthbeat.min.js': ['./growthbeat.js']
+                    './growthbeat-core.min.js': ['./growthbeat-core.js']
                 }
             }
         },
@@ -50,4 +50,5 @@ module.exports = function(grunt){
 
     grunt.registerTask('dev', ['connect', 'watch']);
     grunt.registerTask('default', ['typescript', 'nanoajax2GM', 'uglify']);
+
 };

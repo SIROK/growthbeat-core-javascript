@@ -20,7 +20,7 @@ module Growthbeat {
             return this.instance;
         }
 
-        private constructor() {
+        constructor() {
         }
 
         public initialize(applicationId:string, credentialId:string):void {

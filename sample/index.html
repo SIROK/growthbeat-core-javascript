@@ -6,12 +6,11 @@
     <title>Test for growthbeat</title>
 </head>
 <body>
-    <script src="../growthbeat.js"></script>
+    <script src="../growthbeat-core.js"></script>
     <script>
-        if(Growthbeat){Growthbeat.initialize = new Growthbeat.Initialize({
-          applicationId : 'PE3qcyxaRrotBfDB',
-          credentialId : 'FlY5dqiMFLojtYEvSm2eIXvVqe3Cg4Sj'
-        })}
+        if (Growthbeat) {
+            Growthbeat.GrowthbeatCore.getInstance().initialize('OrT9IvW8OfjT3l8v', '1uXjteEtoO0PBmXo84jGdrHGCsjod4cY');
+        }
     </script>
 </body>
 </html>
