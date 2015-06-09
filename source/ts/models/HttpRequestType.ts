@@ -13,8 +13,6 @@ module Growthbeat {
                     return HttpRequestType.normal;
                 case 'cors':
                     return HttpRequestType.cors;
-                case 'jsonp':
-                    return HttpRequestType.jsonp;
                 default:
                     return undefined;
             }
@@ -28,8 +26,6 @@ module Growthbeat {
                     return 'normal';
                 case HttpRequestType.cors:
                     return 'cors';
-                case HttpRequestType.jsonp:
-                    return 'jsonp';
                 default:
                     return undefined;
             }

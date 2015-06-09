@@ -1,6 +1,8 @@
 module Growthbeat {
     export class HttpClient {
 
+        private static JSONP_CALLBACK_PREFIX = 'Growthbeat.HttpClient.JsonPResponse.';
+
         private static APPLICATION_JSON:string = 'application/json';
         private static APPLICATION_FORM_URLENCODED:string = 'application/x-www-form-urlencoded';
 
@@ -19,9 +21,6 @@ module Growthbeat {
                 case HttpRequestType.cors:
                     this.requestByCors(path, 'GET', params, success, error);
                     break;
-                case HttpRequestType.jsonp:
-                    this.requestByJsonP(path, params, success, error);
-                    break;
                 default:
                     // TODO error
                     break;
@@ -37,9 +36,6 @@ module Growthbeat {
                     break;
                 case HttpRequestType.cors:
                     this.requestByCors(path, 'POST', params, success, error);
-                    break;
-                case HttpRequestType.jsonp:
-                    // TODO error
                     break;
                 default:
                     // TODO error
@@ -57,9 +53,6 @@ module Growthbeat {
                 case HttpRequestType.cors:
                     this.requestByCors(path, 'PUT', params, success, error);
                     break;
-                case HttpRequestType.jsonp:
-                    // TODO error
-                    break;
                 default:
                     // TODO error
                     break;
@@ -76,13 +69,24 @@ module Growthbeat {
                 case HttpRequestType.cors:
                     this.requestByCors(path, 'DELETE', params, success, error);
                     break;
-                case HttpRequestType.jsonp:
-                    // TODO error
-                    break;
                 default:
                     // TODO error
                     break;
             }
+
+        }
+
+        public jsonPRequest(callback:string, path:string, params:any, success:(responseText:string) => void, error:(errorModel:ErrorModel) => void):void {
+
+            var script = document.createElement('script');
+            params.callback = HttpClient.JSONP_CALLBACK_PREFIX + callback;
+
+            script.src = this.baseUrl + path + HttpUtils.serializeObjectForURI(params);
+            document.head.appendChild(script);
+
+            window[HttpClient.JSONP_CALLBACK_PREFIX + callback] = (responseText:string) => {
+                success(responseText);
+            };
 
         }
 
@@ -103,20 +107,6 @@ module Growthbeat {
             };
 
             this.request(path, method, headers, params, true, success, error);
-
-        }
-
-        private requestByJsonP(path:string, params:{}, success:(responseText:string) => void, error:(errorModel:ErrorModel) => void):void {
-
-            var script = document.createElement('script');
-
-            // FIXME callback fixation
-            script.src = this.baseUrl + path + HttpUtils.serializeObjectForURI(params);
-            document.head.appendChild(script);
-
-            window['Growthbeat.HttpClient.JsonPResponse'] = (responseText:string) => {
-                success(responseText);
-            };
 
         }
 
