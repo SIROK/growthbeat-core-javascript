@@ -111,7 +111,7 @@ module Growthbeat {
             var script = document.createElement('script');
 
             // FIXME callback fixation
-            script.src = this.baseUrl + path + '?' + UrlUtils.serializeObject(params);
+            script.src = this.baseUrl + path + HttpUtils.serializeObjectForURI(params);
             document.head.appendChild(script);
 
             window['Growthbeat.HttpClient.JsonPResponse'] = (responseText:string) => {
@@ -124,18 +124,14 @@ module Growthbeat {
 
             var body:string = '';
             if (method == 'GET')
-                path = path + '?' + UrlUtils.serializeObject(params);
+                path = path + HttpUtils.serializeObjectForURI(params);
             else
-                body = body + UrlUtils.serializeObject(params);
-
-            var headerText:string = Object.keys(headers).map(key => {
-                return key + ': ' + encodeURIComponent(headers[key]);
-            }).join('\n');
+                body = body + HttpUtils.serializeObjectForBody(params);
 
             nanoajax.ajax({
                 url: this.baseUrl + path,
                 method: method,
-                headers: headerText,
+                headers: HttpUtils.serializeObjectForHeader(headers),
                 body: body,
                 withCredentials: true,
             }, (code:number, responseText:string) => {
