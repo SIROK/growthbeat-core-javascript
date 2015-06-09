@@ -10,23 +10,103 @@ module Growthbeat {
             this.baseUrl = baseUrl;
         }
 
-        public get(path:string, params:{}, success:(responseText:string) => void, error:(errorModel:ErrorModel) => void) {
-            this.request(path, 'GET', params, success, error);
+        public get(requestType:HttpRequestType, path:string, params:{}, success:(responseText:string) => void, error:(errorModel:ErrorModel) => void) {
+
+            switch (requestType) {
+                case HttpRequestType.normal:
+                    this.requestOwnDomain(path, 'GET', params, success, error);
+                    break;
+                case HttpRequestType.cors:
+                    this.requestByCors(path, 'GET', params, success, error);
+                    break;
+                case HttpRequestType.jsonp:
+                    this.requestByJsonP(path, 'GET', params, success, error);
+                    break;
+                default:
+                    break;
+            }
+
         }
 
-        public post(path:string, params:{}, success:(responseText:string) => void, error:(errorModel:ErrorModel) => void) {
-            this.request(path, 'POST', params, success, error);
+        public post(requestType:HttpRequestType, path:string, params:{}, success:(responseText:string) => void, error:(errorModel:ErrorModel) => void) {
+
+            switch (requestType) {
+                case HttpRequestType.normal:
+                    this.requestOwnDomain(path, 'POST', params, success, error);
+                    break;
+                case HttpRequestType.cors:
+                    this.requestByCors(path, 'POST', params, success, error);
+                    break;
+                case HttpRequestType.jsonp:
+                    this.requestByJsonP(path, 'POST', params, success, error);
+                    break;
+                default:
+                    break;
+            }
+
         }
 
-        public put(path:string, params:{}, success:(responseText:string) => void, error:(errorModel:ErrorModel) => void) {
-            this.request(path, 'PUT', params, success, error);
+        public put(requestType:HttpRequestType, path:string, params:{}, success:(responseText:string) => void, error:(errorModel:ErrorModel) => void) {
+
+            switch (requestType) {
+                case HttpRequestType.normal:
+                    this.requestOwnDomain(path, 'PUT', params, success, error);
+                    break;
+                case HttpRequestType.cors:
+                    this.requestByCors(path, 'PUT', params, success, error);
+                    break;
+                case HttpRequestType.jsonp:
+                    this.requestByJsonP(path, 'PUT', params, success, error);
+                    break;
+                default:
+                    break;
+            }
+
         }
 
-        public delete(path:string, params:{}, success:(responseText:string) => void, error:(errorModel:ErrorModel) => void) {
-            this.request(path, 'DELETE', params, success, error);
+        public delete(requestType:HttpRequestType, path:string, params:{}, success:(responseText:string) => void, error:(errorModel:ErrorModel) => void) {
+
+            switch (requestType) {
+                case HttpRequestType.normal:
+                    this.requestOwnDomain(path, 'DELETE', params, success, error);
+                    break;
+                case HttpRequestType.cors:
+                    this.requestByCors(path, 'DELETE', params, success, error);
+                    break;
+                case HttpRequestType.jsonp:
+                    this.requestByJsonP(path, 'DELETE', params, success, error);
+                    break;
+                default:
+                    break;
+            }
+
         }
 
-        private request(path:string, method:string, params:{}, success:(responseText:string) => void, error:(errorModel:ErrorModel) => void):void {
+        private requestOwnDomain(path:string, method:string, params:{}, success:(responseText:string) => void, error:(errorModel:ErrorModel) => void):void {
+
+            var headers:{} = {
+                Accept: HttpClient.APPLICATION_JSON,
+                'Content-Type': HttpClient.APPLICATION_FORM_URLENCODED,
+            };
+
+            this.request(path, method, headers, params, false, success, error);
+
+        }
+
+        private requestByCors(path:string, method:string, params:{}, success:(responseText:string) => void, error:(errorModel:ErrorModel) => void):void {
+
+            var headers:{} = {
+            };
+
+            this.request(path, method, headers, params, true, success, error);
+
+        }
+
+        private requestByJsonP(path:string, method:string, params:{}, success:(responseText:string) => void, error:(errorModel:ErrorModel) => void):void {
+            // TODO implements
+        }
+
+        private request(path:string, method:string, headers:{}, params:{}, withCredentials:boolean, success:(responseText:string) => void, error:(errorModel:ErrorModel) => void):void {
 
             var body:string = '';
             if (method == 'GET')
@@ -34,10 +114,6 @@ module Growthbeat {
             else
                 body = body + UrlUtils.serializeObject(params);
 
-            var headers:{} = {
-                Accept: HttpClient.APPLICATION_JSON,
-                'Content-Type': HttpClient.APPLICATION_FORM_URLENCODED,
-            };
             var headerText:string = Object.keys(headers).map(key => {
                 return key + ': ' + encodeURIComponent(headers[key]);
             }).join('\n');
@@ -47,21 +123,13 @@ module Growthbeat {
                 method: method,
                 headers: headerText,
                 body: body,
-                withCredentials: false,
+                withCredentials: true,
             }, (code:number, responseText:string) => {
                 if (code != 200)
                     error(new Growthbeat.ErrorModel(responseText));
                 success(responseText);
             });
 
-        }
-
-        private requestByCors(path:string, method:string, params:{}, success:(responseText:string) => void, error:(errorModel:ErrorModel) => void):void {
-            // TODO implements
-        }
-
-        private requestByJsonP(path:string, method:string, params:{}, success:(responseText:string) => void, error:(errorModel:ErrorModel) => void):void {
-            // TODO implements
         }
 
     }
